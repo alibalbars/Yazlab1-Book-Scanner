@@ -1,0 +1,43 @@
+﻿*{
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 2rem !important;
+}
+
+#loginform {
+    
+    width: 20%;
+    margin:2rem auto;
+    
+}
+
+#table-center {
+    width: 20%;
+    margin: 2rem auto;
+}
+
+#formgroupname {
+    margin: 0;
+}
+
+#formgroupsurname {
+    margin: 0;
+}
+
+#cssTable td {
+    text-align: center;
+    vertical-align: middle;
+   
+}
+
+#cssTable {
+    font-weight: 600 !important;
+}
+
+#cssTable p{
+    margin: 0 !important;
+}

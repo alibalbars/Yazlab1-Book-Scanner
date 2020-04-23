@@ -1,0 +1,43 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Kitaplarım</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="~/StyleSheets/style.css" rel="stylesheet" />
+</head>
+<body>
+    <h1>Kitaplarım</h1>
+    <h5 style="text-align: center; margin-bottom: 2rem;">(@ViewBag.userName)</h5>
+
+    <table class="table table-striped" style="width: 50%; margin: 2rem auto; min-width: 500px;">
+        <thead class="thead-dark">
+            <tr>
+                <th>Book Id</th>
+                <th>Book Name</th>
+                <th>Book ISBN</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in ViewBag.books)
+            {
+                <tr style="font-weight: 600;">
+                    <td>@book.Book_Id</td>
+                    <td>@book.Book_Name</td>
+                    <td>@book.Book_Isbn</td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+    <div>
+
+    </div>
+</body>
+</html>

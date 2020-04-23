@@ -1,0 +1,33 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AddNewBook</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="~/StyleSheets/style.css" rel="stylesheet" />
+</head>
+<body>
+    <h1>Kitap Ekleme Sayfası</h1>
+    <div id="loginform">
+
+        
+        <form action="PostAddNewBook" method="post" enctype="multipart/form-data">
+            
+            <label for="bookName">Kitap Adı:</label>
+            <input class="form-control mb-3" type="text" name="bookName" value="" />
+
+            <label for="file">Filename:</label>
+            <input class="btn btn-info mb-3" type="file" name="file" id="file" />
+
+            <input class="btn btn-primary" type="submit" />
+        </form>
+
+    </div>
+</body>
+</html>

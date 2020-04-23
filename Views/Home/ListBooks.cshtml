@@ -1,0 +1,74 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ListBooks</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="~/StyleSheets/style.css" rel="stylesheet" />
+</head>
+<body>
+    <h1>Kitaplar</h1>
+    <div style="margin: 2rem 0;">
+        <form action="ListBooks" method="post" enctype="multipart/form-data" style="text-align: center;" class=" mb-2">
+            <label for="bookNameSearch">Kitap adı ara: </label>
+            <input type="text" id="bookNameSearch" name="bookNameSearch"/>
+            <input class="btn btn-primary ml-3" type="submit" />
+        </form>
+
+        <form action="ListBooks" method="post" enctype="multipart/form-data" style="text-align: center;">
+            <label for="IsbnSearch">ISBN ara: </label>
+            <input type="text" id="IsbnSearch" name="IsbnSearch" />
+            <input class="btn btn-primary ml-3" type="submit" />
+        </form>
+    </div>
+    
+
+    <div style="width: 50%; margin: 2rem auto; min-width: 500px;"> 
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Kitap Id</th>
+                    <th>Kitap Adı</th>
+                    <th>Kitap ISBN</th>
+                </tr>
+            </thead>
+
+            <tbody  id="owner_of_rows">
+                @foreach (var book in ViewBag.books)
+                {
+                    <tr style="font-weight: 600;">
+                        <td style="font-weight: 600;">@book.Book_Id</td>
+                        <td>@book.Book_Name</td>
+                        <td>@book.Book_Isbn</td>
+                    </tr>
+                }
+            </tbody>
+            </table>
+        <div id="divButton" style="text-align:center">
+            @using (Html.BeginForm("LoanBook", "Home"))
+            {
+                <input type="submit" id="btnBorrow" class="btn btn-success" value="Kitabı al" style="visibility: hidden"/>
+            }
+
+        </div>
+    </div>
+
+    <script>
+        var btn = document.getElementById("btnBorrow");
+        var owner = document.getElementById("owner_of_rows");
+
+        console.log(owner.childElementCount);
+
+        if (owner.childElementCount == 1) {
+            btn.style.visibility = "visible";
+        }
+
+    </script>
+</body>
+</html>

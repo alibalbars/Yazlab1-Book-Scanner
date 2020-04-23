@@ -1,0 +1,104 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ListUsers</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="~/StyleSheets/style.css" rel="stylesheet" />
+</head>
+<body>
+    <h1>Kullanıcılar</h1>
+    @*<div style="display: block; text-align: center; margin-top: 3rem;">
+        <p> @ViewBag.UserHelper.user.First_Name @ViewBag.UserHelper.user.Last_Name </p>
+
+        @foreach (var book in @ViewBag.UserHelper.bookList)
+        {
+            <p>@book.Book_Name</p>
+        }
+        
+        
+    </div>*@
+
+@*<div style="display: block; text-align: center; margin-top: 3rem; font-weight: 600;">
+
+    @foreach (var userHelper in ViewBag.UserHelperList)
+    {
+        <p>@userHelper.user.First_Name @userHelper.user.Last_Name</p>
+
+        foreach (var book in userHelper.bookList)
+        {
+            <p>@book.Book_Id - @book.Book_Name</p>
+
+
+        }
+        <hr>
+    }
+
+</div>*@
+
+<div style="width: 80%; margin: 2rem auto;">
+    <table id="cssTable" class="table table-striped" style="text-align: center;" border="1">
+        <thead class="thead-dark">
+            <tr>
+                <th>Kullanıcı ID</th>
+                <th>Kullanıcı Adı</th>
+                <th>Kullanıcı Kitaplar</th>
+            </tr>
+        </thead>
+        @foreach (var userHelper in ViewBag.UserHelperList)
+        {
+            <tr>
+                <td rowspan="3"  style="vertical-align: middle;">@userHelper.user.User_Id</td>
+                <td rowspan="3"  style="vertical-align: middle;">@userHelper.user.First_Name @userHelper.user.Last_Name</td>
+                <td>@userHelper.bookList[0].Book_Name</td>
+
+            </tr>
+
+            <tr>
+                <td>
+                    @{
+                    if (userHelper.bookList.Count > 1)
+                    {
+                        @userHelper.bookList[1].Book_Name
+                    }
+                    else
+                    {
+                        <p style="margin: 0">Yok</p>
+                    }
+                    } 
+                </td>
+
+            </tr>
+
+            <tr>
+                <td style="vertical-align: middle !important;">
+                    @{
+                        if (userHelper.bookList.Count > 2)
+                        {
+                            @userHelper.bookList[2].Book_Name
+                        }
+                        else
+                        {
+                            <p  style="margin: 0">Yok</p>
+                        }
+                    }
+                </td>
+
+            </tr>
+        }
+
+
+    </table>
+
+</div>
+
+    
+
+</body>
+</html>
