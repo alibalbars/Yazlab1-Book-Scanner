@@ -435,7 +435,7 @@ namespace Yazlab1.Controllers
 
                 foreach (var loan in usersLoans)
                 {
-                    //Where içinde metod çağırınca hata veriyor (Query'ye dönüştürme hatası)
+                    //Where içinde metod çağırınca hata veriyor (Query'ye dönüştürme hatası).
                     usersBooks.Add(db.Books.Where(x => x.Book_Id == loan.Book_Id).FirstOrDefault());
                 }
             }
