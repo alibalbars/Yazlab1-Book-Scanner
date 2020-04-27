@@ -41,3 +41,7 @@ h1 {
 #cssTable p{
     margin: 0 !important;
 }
+
+.thick {
+    font-weight: 600;
+}

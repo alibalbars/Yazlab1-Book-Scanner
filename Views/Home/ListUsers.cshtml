@@ -14,33 +14,7 @@
 </head>
 <body>
     <h1>Kullanıcılar</h1>
-    @*<div style="display: block; text-align: center; margin-top: 3rem;">
-        <p> @ViewBag.UserHelper.user.First_Name @ViewBag.UserHelper.user.Last_Name </p>
-
-        @foreach (var book in @ViewBag.UserHelper.bookList)
-        {
-            <p>@book.Book_Name</p>
-        }
-        
-        
-    </div>*@
-
-@*<div style="display: block; text-align: center; margin-top: 3rem; font-weight: 600;">
-
-    @foreach (var userHelper in ViewBag.UserHelperList)
-    {
-        <p>@userHelper.user.First_Name @userHelper.user.Last_Name</p>
-
-        foreach (var book in userHelper.bookList)
-        {
-            <p>@book.Book_Id - @book.Book_Name</p>
-
-
-        }
-        <hr>
-    }
-
-</div>*@
+   
 
 <div style="width: 80%; margin: 2rem auto;">
     <table id="cssTable" class="table table-striped" style="text-align: center;" border="1">
@@ -69,7 +43,7 @@
                     }
                     else
                     {
-                        <p style="margin: 0">Yok</p>
+                        <p style="margin: 0">--</p>
                     }
                     } 
                 </td>
@@ -85,7 +59,7 @@
                         }
                         else
                         {
-                            <p  style="margin: 0">Yok</p>
+                            <p  style="margin: 0">--</p>
                         }
                     }
                 </td>

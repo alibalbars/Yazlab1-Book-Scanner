@@ -7,12 +7,14 @@ using System.Web;
 using System.Web.Mvc;
 using Tesseract;
 using Yazlab1.Models;
+using System.Text.RegularExpressions;
 
 namespace Yazlab1.Controllers
 {
     public class HomeController : Controller
     {
         YazlabDbEntities db;
+        DateTime currentDateTime;
 
         [HttpGet]
         public ActionResult Index()
@@ -50,6 +52,32 @@ namespace Yazlab1.Controllers
 
         public ActionResult AdminPage()
         {
+            db = new YazlabDbEntities();
+            //currentDateTime
+            string currentDateText = string.Empty;
+            DateShiftLog greatestLog = null;
+            List<DateShiftLog> list = new List<DateShiftLog>();
+            try
+            {
+                list = db.DateShiftLogs.ToList();
+            }
+            catch (Exception e)
+            {
+
+                //throw new 
+            }
+            
+            
+            //DateTime nesnesine atama
+
+            //currentDateTime = greatestLog.Date.GetValueOrDefault();
+            //currentDateText = currentDateTime.ToString("dd/MM/yyyy");
+            //if (currentDateText != null)
+            //{
+            //    ViewBag.currentDateText = currentDateText;
+            //}
+            
+            
             return View();
         }
 
@@ -117,7 +145,7 @@ namespace Yazlab1.Controllers
             else if (IsbnSearch != null)
             {
                 searchedBook = db.Books.Where(x => x.Book_Isbn == IsbnSearch)
-                    .SingleOrDefault();
+                    .FirstOrDefault();
                 
                 if (searchedBook != null)
                 {
@@ -240,22 +268,13 @@ namespace Yazlab1.Controllers
         public ActionResult MyBooks()
         {
             db = new YazlabDbEntities();
-            //List<Book> currentUsersBooks = new List<Book>();
             User currentUser = GetCurrentUser();
             ViewBag.userName = currentUser.First_Name + " " + currentUser.Last_Name;
 
             if (GetCurrentUser() != null)
             {
                 try
-                {
-                    //List<Loan> usersLoans = db.Loans.Where(x => x.User_Id == currentUser.User_Id).ToList();
-
-                    //foreach (var loan in usersLoans)
-                    //{
-                    //    //Where içinde metod çağırınca hata veriyor (Query'ye dönüştürme hatası)
-                    //    currentUsersBooks.Add(db.Books.Where(x => x.Book_Id == loan.Book_Id).FirstOrDefault());
-                    //}
-                    //ViewBag.books = currentUsersBooks;
+                { 
                     ViewBag.books = GetUsersBook(currentUser.User_Id);
 
                 }
@@ -312,7 +331,30 @@ namespace Yazlab1.Controllers
             page = engine.Process(bitmap, PageSegMode.Auto);
             text = page.GetText();
 
-            return text;
+            //string textCorrect = Regex.Unescape(text);
+            string textCorrect = CorrectString(text);
+
+            //Düzenleme
+
+            //if (@text.Contains("\n"))
+            //{
+            //    @text.Trim();
+            //    @text.Trim('\n');
+            //    @text.Replace("\n", string.Empty);
+            //    @text.Trim();
+            //}
+
+            return textCorrect;
+        }
+
+        public string CorrectString(string str)
+        {
+            char[] array = str.ToCharArray();
+            array = array.Where(x => x != '\n').ToArray();
+            array = array.Where(x => x != ' ').ToArray();
+            array = array.Where(x => x != '|').ToArray();
+
+            return new string(array);
         }
 
         public string DeliverBook(Book book)
@@ -359,6 +401,7 @@ namespace Yazlab1.Controllers
             var allUserList = db.Users.ToList();
             ViewBag.users = allUserList;
             List<string> userNames = new List<string>();
+
             //Her kullanıcı için, kullanıcının tüm kitapları (foreach)
             foreach (var user in allUserList)
             {
@@ -367,9 +410,6 @@ namespace Yazlab1.Controllers
             ViewBag.bookList = db.Loans.OrderBy(x => x.User_Id).ToList();
 
             List<UserHelper> userHelperList = new List<UserHelper>();
-            //UserHelper userhelper1 = new UserHelper();
-            //userhelper1.user = db.Users.OrderBy(x => x.User_Id).FirstOrDefault();
-            //userhelper1.bookList = GetUsersBook(userhelper1.user.User_Id);
 
             foreach (User user in allUserList)
             {
@@ -381,7 +421,6 @@ namespace Yazlab1.Controllers
 
             
             ViewBag.UserHelperList = userHelperList;
-            //ViewBag.UserHelper = userhelper1;
             return View();
         }
 
