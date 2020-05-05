@@ -22,22 +22,32 @@
                 <th>Book Id</th>
                 <th>Book Name</th>
                 <th>Book ISBN</th>
+                <th>Deliver Date</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var book in ViewBag.books)
+            @for (int i = 0; i < ViewBag.books.Count; i++)
             {
-                <tr style="font-weight: 600;">
-                    <td>@book.Book_Id</td>
-                    <td>@book.Book_Name</td>
-                    <td>@book.Book_Isbn</td>
-                </tr>
-
+            <tr style="font-weight: 600;">
+                <td>@ViewBag.books[i].Book_Id</td>
+                <td>@ViewBag.books[i].Book_Name</td>
+                <td>@ViewBag.books[i].Book_Isbn</td>
+                @{
+                    if (ViewBag.deliverDateTimeList[i] < ViewBag.currentDateTime)
+                    {
+                        <td>@ViewBag.deliverDateTextList[i] <span style="color: red;">(x)</span></td>
+                    }
+                    else
+                    {
+                        <td>@ViewBag.deliverDateTextList[i]</td>
+                    }
+                }
+            </tr>
             }
         </tbody>
     </table>
-    <div>
-
+    <div style="text-align: center; margin-top: 2rem;">
+        <p class="label-date">Tarih: @ViewBag.currentDateText</p>
     </div>
 </body>
 </html>

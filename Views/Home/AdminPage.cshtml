@@ -11,12 +11,7 @@
     <title>AdminPage</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="~/StyleSheets/style.css" rel="stylesheet" />
-    @*<style>
-        p button{
-            font-weight: 600 !important;
-
-        }
-    </style>*@
+    
 </head>
 <body>
     <h1>Admin Sayfası</h1>
@@ -24,14 +19,14 @@
         <button id="Selam" class="btn btn-info thick" type="button" onclick="location.href='@Url.Action("AddNewBook")'">Kitap ekle</button>
         <button id="list_users" class="btn btn-info thick" type="button" onclick="location.href='@Url.Action("ListUsers")'">Kullanıcıları listele</button>
 
-        <form action="/Home/AdminPage" method="post" style="display: inline-block;">
+        <form action="/Home/ShiftTime" method="post" style="display: inline-block;">
             <button class="btn btn-info thick" type="submit">20 gün atla</button>
         </form>
 
     </div>
 
     <div style="text-align: center; margin-top: 2rem;">
-        <p style="padding: 0.25rem 0.5rem; color:black; background-color: lightgrey; display: inline-block; font-weight:600; border-radius:1rem;">Tarih: 01/01/2020</p>
+        <p class="label-date">Tarih: @ViewBag.currentDateText</p>
     </div>
    
 </body>

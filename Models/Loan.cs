@@ -17,6 +17,6 @@ namespace Yazlab1.Models
         public int Loan_Id { get; set; }
         public Nullable<int> Book_Id { get; set; }
         public Nullable<int> User_Id { get; set; }
-        public Nullable<int> Loan_Duration { get; set; }
+        public Nullable<System.DateTime> Deliver_Date { get; set; }
     }
 }

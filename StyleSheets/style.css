@@ -46,6 +46,11 @@ h1 {
     font-weight: 600;
 }
 
-.u {
-
+.label-date {
+    padding: 0.25rem 0.5rem;
+    color: black;
+    background-color: lightgrey;
+    display: inline-block;
+    font-weight: 600;
+    border-radius: 1rem;
 }

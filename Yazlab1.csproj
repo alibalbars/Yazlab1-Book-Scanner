@@ -139,6 +139,7 @@
     <Compile Include="Models\Book.cs">
       <DependentUpon>YazlabDbModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\BookHelper.cs" />
     <Compile Include="Models\DateShiftLog.cs">
       <DependentUpon>YazlabDbModel.tt</DependentUpon>
     </Compile>

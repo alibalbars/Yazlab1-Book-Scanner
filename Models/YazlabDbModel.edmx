@@ -28,7 +28,7 @@
           <Property Name="Loan_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Book_Id" Type="int" />
           <Property Name="User_Id" Type="int" />
-          <Property Name="Loan_Duration" Type="int" />
+          <Property Name="Deliver_Date" Type="date" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -74,7 +74,7 @@
           <Property Name="Loan_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Book_Id" Type="Int32" />
           <Property Name="User_Id" Type="Int32" />
-          <Property Name="Loan_Duration" Type="Int32" />
+          <Property Name="Deliver_Date" Type="DateTime" Precision="0" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -122,7 +122,7 @@
                 <ScalarProperty Name="Loan_Id" ColumnName="Loan_Id" />
                 <ScalarProperty Name="Book_Id" ColumnName="Book_Id" />
                 <ScalarProperty Name="User_Id" ColumnName="User_Id" />
-                <ScalarProperty Name="Loan_Duration" ColumnName="Loan_Duration" />
+                <ScalarProperty Name="Deliver_Date" ColumnName="Deliver_Date" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

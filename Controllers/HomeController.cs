@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Tesseract;
 using Yazlab1.Models;
 using System.Text.RegularExpressions;
+using System.Text;
 
 namespace Yazlab1.Controllers
 {
@@ -15,6 +16,7 @@ namespace Yazlab1.Controllers
     {
         YazlabDbEntities db;
         DateTime currentDateTime;
+        string currentDateText;
 
         [HttpGet]
         public ActionResult Index()
@@ -44,41 +46,71 @@ namespace Yazlab1.Controllers
                     throw new HttpException("Kullanıcı bulunamadı.");
                     
                 }
-
                 Response.Redirect("UserPage");
             }
-            
         }
 
         public ActionResult AdminPage()
         {
+            GetGreatestDate();
+            
+            ViewBag.currentDateText = GetGreatestDate().ToString("dd/MM/yyyy");
+            
+            //ViewBag.currentDateText = "01/01/2020";
+
+            return View();
+        }
+
+        public void ShiftTime()
+        {
+            int dayNumber = 20;
             db = new YazlabDbEntities();
-            //currentDateTime
-            string currentDateText = string.Empty;
+
+            AddNewTimeLog();
+
+            currentDateTime = GetGreatestDate();
+            currentDateTime = currentDateTime.AddDays(dayNumber);
+            currentDateText = currentDateTime.ToString("dd/MM/yyyy");
+
+            Response.Redirect("AdminPage");
+        }
+
+        public DateTime GetGreatestDate()
+        {
+            db = new YazlabDbEntities();
             DateShiftLog greatestLog = null;
-            List<DateShiftLog> list = new List<DateShiftLog>();
             try
             {
-                list = db.DateShiftLogs.ToList();
+                greatestLog = db.DateShiftLogs.OrderByDescending(x => x.Date).FirstOrDefault();
             }
             catch (Exception e)
             {
-
-                //throw new 
+                throw new HttpException("Database den guncel log alınamadı.");
             }
-            
-            
-            //DateTime nesnesine atama
 
-            //currentDateTime = greatestLog.Date.GetValueOrDefault();
-            //currentDateText = currentDateTime.ToString("dd/MM/yyyy");
-            //if (currentDateText != null)
-            //{
-            //    ViewBag.currentDateText = currentDateText;
-            //}
-            
-            
-            return View();
+            return (DateTime)greatestLog.Date;
+        }
+
+        public void AddNewTimeLog()
+        {
+            db = new YazlabDbEntities();
+
+            DateShiftLog newLog = new DateShiftLog();
+            if (currentDateTime != null)
+            {
+                newLog.Date = GetGreatestDate().AddDays(20);
+            }
+
+            try
+            {
+                db.DateShiftLogs.Add(newLog);
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                throw new HttpException("Databaseye newLog eklenemedi.");
+            }
+
         }
 
         public ActionResult UserPage()
@@ -169,11 +201,25 @@ namespace Yazlab1.Controllers
             db = new YazlabDbEntities();
             Loan loan = new Loan();
 
+            //List'in item sayısı 0'dan büyükse
+            if (GetUserExpiredBookList(userId).Count > 0)
+            {
+                var userExpiredBookList = GetUserExpiredBookList(userId);
+                //Teslim tarihi geçen kitap isimlerini alma
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Teslim tarihi geçen kitaplar: ");
+                sb.Append(Environment.NewLine);
+                userExpiredBookList.ForEach(x => sb.Append(x.Book_Name + " "));
+
+                return "Teslim alma başarısız!<br>"+ GetCurrentUser().First_Name + " " + GetCurrentUser().Last_Name + 
+                    ", teslim tarihi geçmiş kitaplara sahip.<br><br>" + sb.ToString();
+            }
             //Kullanımda ise
-            if (!IsBookSuitable(bookId))
+            else if (!IsBookSuitable(bookId))
             {
                 return "Teslim alma başarısız!<br><br>Kitap kullanımda olduğu için alınamadı!";
             }
+            //Halihazırda 3 kitabı varsa
             else if (CheckUserSuitability(GetCurrentUser()) == 1)
             {
                 return "Teslim alma başarısız!<br><br>" + GetCurrentUser().First_Name + " " + GetCurrentUser().Last_Name
@@ -183,7 +229,7 @@ namespace Yazlab1.Controllers
             {
                 loan.Book_Id = bookId;
                 loan.User_Id = userId;
-                loan.Loan_Duration = 7;
+                loan.Deliver_Date = GetGreatestDate().AddDays(7);
                 db.Loans.Add(loan);
                 db.SaveChanges();
 
@@ -265,18 +311,50 @@ namespace Yazlab1.Controllers
             //false => kitap kullanımda
         }
 
+        public List<Book> GetUserExpiredBookList(int userId)
+        {
+            //null kontrolü
+            if (userId == 0) return new List<Book>();
+
+            db = new YazlabDbEntities();
+            List<Book> userExpiredBookList = new List<Book>();
+            var userBookList = GetUsersBook(userId);
+            currentDateTime = GetGreatestDate();
+
+            var allExpireBookIdList = db.Loans.Where(x => x.Deliver_Date < currentDateTime)
+                .Select(x => x.Book_Id).ToList();
+
+            foreach (var book in userBookList)
+            {
+                if (allExpireBookIdList.Contains(book.Book_Id))
+                    userExpiredBookList.Add(book);
+            }
+
+            return userExpiredBookList;
+        }
+
         public ActionResult MyBooks()
         {
             db = new YazlabDbEntities();
             User currentUser = GetCurrentUser();
             ViewBag.userName = currentUser.First_Name + " " + currentUser.Last_Name;
+            List<Book> books = GetUsersBook(currentUser.User_Id);
+            List<string> deliverDateTextList = new List<string>();
+            List<DateTime> deliverDateTimeList = new List<DateTime>();
+
+            books.ForEach(delegate(Book book)
+            {
+                deliverDateTextList.Add(book.GetDeliverDate().ToString("dd/MM/yyyy"));
+                deliverDateTimeList.Add(book.GetDeliverDate());
+            });
 
             if (GetCurrentUser() != null)
             {
                 try
                 { 
-                    ViewBag.books = GetUsersBook(currentUser.User_Id);
-
+                    ViewBag.books = books;
+                    ViewBag.deliverDateTextList = deliverDateTextList;
+                    ViewBag.deliverDateTimeList = deliverDateTimeList;
                 }
                 catch (Exception e)
                 {
@@ -284,7 +362,9 @@ namespace Yazlab1.Controllers
                 }
 
             }
-            
+
+            ViewBag.currentDateTime = GetGreatestDate();
+            ViewBag.currentDateText = GetGreatestDate().ToString("dd/MM/yyyy");
             return View();
         }
 
@@ -325,36 +405,91 @@ namespace Yazlab1.Controllers
             db = new YazlabDbEntities();
 
             fileName = Path.GetFileName(file.FileName);
-            path = Path.Combine(Server.MapPath("~/App_Data/"), fileName);
+            path = Path.Combine(Server.MapPath("~/Kitap_Fotograflari/"), fileName);
             bitmap = new Bitmap(path);
             engine = new TesseractEngine(@"C:\Users\Ali\Documents\C#\Yazlab1\packages\Tesseract.3.3.0\tessdata", "eng");
             page = engine.Process(bitmap, PageSegMode.Auto);
             text = page.GetText();
 
-            //string textCorrect = Regex.Unescape(text);
-            string textCorrect = CorrectString(text);
-
-            //Düzenleme
-
-            //if (@text.Contains("\n"))
-            //{
-            //    @text.Trim();
-            //    @text.Trim('\n');
-            //    @text.Replace("\n", string.Empty);
-            //    @text.Trim();
-            //}
+            string textCorrect = EditStringAccordingFirstChars(EditStringForIsbn(text), "978");
 
             return textCorrect;
         }
 
-        public string CorrectString(string str)
+        public string EditStringForIsbn(string inputStr)
         {
-            char[] array = str.ToCharArray();
+            if (inputStr == null || inputStr == string.Empty)
+                return string.Empty;
+
+            char[] array = inputStr.ToCharArray();
             array = array.Where(x => x != '\n').ToArray();
             array = array.Where(x => x != ' ').ToArray();
             array = array.Where(x => x != '|').ToArray();
+            array = array.Where(x => x != '>').ToArray();
+
+            var list = new List<char>(array);
+
+            //Number değilse listeden çıkar
+            for (int i = 0; i < list.Count(); i++)
+            {
+                if (!Char.IsDigit(list[i]))
+                {
+                    list.Remove(list[i]);
+                }
+            }
+
+            //System.InvalidOperationException, Koleksiyon değiştirildi; 
+            //sabit listesi işlemi yürütülemeyebilir.
+            //list.ForEach(x =>
+            //{
+            //    if (Char.IsNumber(x))
+            //        list.Remove(x);
+            //});
+
+            array = list.ToArray();
 
             return new string(array);
+        }
+
+        public string EditStringAccordingFirstChars(string inputStr, string firstChars)
+        {
+            if (inputStr == null || inputStr == string.Empty ||
+                firstChars == null || firstChars == string.Empty)
+                return string.Empty;
+
+            char[] arrayStr = inputStr.ToCharArray();
+            char[] arrayFirstChars = firstChars.ToCharArray();
+            bool[] checkChars = new bool[arrayFirstChars.Count()];
+
+            StringBuilder editedSb = new StringBuilder();
+            bool flag = false;
+            bool isAddable = false;
+
+            //ArrayIndexOfBound Hatası almamak için
+            for (int i = 0; i < arrayStr.Count() - arrayFirstChars.Count(); i++)
+            {
+                if (arrayStr[i] == arrayFirstChars[0])
+                    if (arrayStr[i+1] == arrayFirstChars[1])
+                        if (arrayStr[i+2] == arrayFirstChars[2])
+                        {
+                            //978 bulunduysa, i = 9'un indexi
+
+                            //ilk 978 ise
+                            if(flag == false)
+                                isAddable = true;
+                            else
+                                isAddable = false;
+                            
+                            flag = true;
+                        }
+
+                if (isAddable)
+                {
+                    editedSb.Append(arrayStr[i].ToString());
+                }
+
+            }
+            return editedSb.ToString();
         }
 
         public string DeliverBook(Book book)
@@ -407,7 +542,7 @@ namespace Yazlab1.Controllers
             {
                 userNames.Add(user.First_Name + " " + user.Last_Name);
             }
-            ViewBag.bookList = db.Loans.OrderBy(x => x.User_Id).ToList();
+            //Kitap silince Loans'dan o kitabın kaydını silmeyi unutma.
 
             List<UserHelper> userHelperList = new List<UserHelper>();
 
@@ -419,7 +554,6 @@ namespace Yazlab1.Controllers
                 userHelperList.Add(newUserHelper);
             }
 
-            
             ViewBag.UserHelperList = userHelperList;
             return View();
         }
@@ -445,6 +579,5 @@ namespace Yazlab1.Controllers
             }
             return usersBooks;
         }
-
     }
 }

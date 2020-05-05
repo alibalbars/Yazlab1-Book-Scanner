@@ -16,7 +16,7 @@
     <h1>Kullanıcılar</h1>
    
 
-<div style="width: 80%; margin: 2rem auto;">
+<div style="width: 40%; margin: 2rem auto;">
     <table id="cssTable" class="table table-striped" style="text-align: center;" border="1">
         <thead class="thead-dark">
             <tr>
@@ -30,8 +30,20 @@
             <tr>
                 <td rowspan="3"  style="vertical-align: middle;">@userHelper.user.User_Id</td>
                 <td rowspan="3"  style="vertical-align: middle;">@userHelper.user.First_Name @userHelper.user.Last_Name</td>
-                <td>@userHelper.bookList[0].Book_Name</td>
+                <td>
+                    @{
+                        if (userHelper.bookList.Count > 0)
+                        {
+                            @userHelper.bookList[0].Book_Name
+                        }
+                        else
+                        {
+                            <p style="margin: 0">--</p>
+                        }
+                    }
 
+                </td>
+                
             </tr>
 
             <tr>
