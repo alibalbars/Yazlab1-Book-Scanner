@@ -295,7 +295,6 @@ namespace Yazlab1.Controllers
             {
                 return 1;
             }
-            
             return 0;
         }
 
@@ -380,7 +379,6 @@ namespace Yazlab1.Controllers
             {
                 resultIsbn = ReadImage(file);
             }
-                
 
             if (/*resultIsbn != string.Empty || */resultIsbn != null)
             {
