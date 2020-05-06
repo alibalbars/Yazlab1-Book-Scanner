@@ -404,10 +404,11 @@ namespace Yazlab1.Controllers
             string text, fileName, path;
             db = new YazlabDbEntities();
 
+
             fileName = Path.GetFileName(file.FileName);
             path = Path.Combine(Server.MapPath("~/Kitap_Fotograflari/"), fileName);
             bitmap = new Bitmap(path);
-            engine = new TesseractEngine(@"C:\Users\Ali\Documents\C#\Yazlab1\packages\Tesseract.3.3.0\tessdata", "eng");
+            engine = new TesseractEngine(@"C:\Users\ASUS\Documents\Okul\Yazılım Laboratuvarı\Proje 1\Yazlab1\packages\Tesseract.3.3.0\tessdata", "eng");
             page = engine.Process(bitmap, PageSegMode.Auto);
             text = page.GetText();
 
