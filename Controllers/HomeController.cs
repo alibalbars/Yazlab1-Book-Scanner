@@ -44,7 +44,6 @@ namespace Yazlab1.Controllers
                 catch (Exception e)
                 {
                     throw new HttpException("Kullanıcı bulunamadı.");
-                    
                 }
                 Response.Redirect("UserPage");
             }
@@ -53,11 +52,8 @@ namespace Yazlab1.Controllers
         public ActionResult AdminPage()
         {
             GetGreatestDate();
-            
             ViewBag.currentDateText = GetGreatestDate().ToString("dd/MM/yyyy");
-            
             //ViewBag.currentDateText = "01/01/2020";
-
             return View();
         }
 
@@ -376,12 +372,15 @@ namespace Yazlab1.Controllers
             ViewBag.userName = GetCurrentUser().First_Name + " " + GetCurrentUser().Last_Name;
             string deliverState;
 
-            if (isbnByHand != string.Empty || isbnByHand != null)
+            //if (isbnByHand != string.Empty || isbnByHand != null || )
+            //{
+            //    resultIsbn = isbnByHand;
+            //}
+            if (file != null)
             {
-                resultIsbn = isbnByHand;
-            }
-            else if (file != null)
                 resultIsbn = ReadImage(file);
+            }
+                
 
             if (/*resultIsbn != string.Empty || */resultIsbn != null)
             {
@@ -509,7 +508,6 @@ namespace Yazlab1.Controllers
                 return "Teslim edilemedi. " + GetCurrentUser().First_Name + " " + GetCurrentUser().Last_Name
                     + " zaten " + book.Book_Name + " adlı kitaba sahip değil.";
             }
-           
         }
 
         public Boolean DoesCurrentUserHave(Book book)
@@ -579,5 +577,6 @@ namespace Yazlab1.Controllers
             }
             return usersBooks;
         }
+
     }
 }
